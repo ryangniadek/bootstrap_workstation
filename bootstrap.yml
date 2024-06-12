@@ -1,0 +1,22 @@
+---
+- name: Bootstrap workstation
+  become: true
+  hosts: localhost
+
+  tasks:
+
+    - name: Include user management
+      ansible.builtin.include_tasks:
+        file: tasks/user.yml
+      vars:
+        user: rgniadek
+        user_name: Ryan Gniadek
+        user_email: rpg@redhat.com
+
+    - name: Include package management tasks
+      ansible.builtin.include_tasks:
+        file: tasks/packages.yml
+
+    - name: Include systemd service tasks
+      ansible.builtin.include_tasks:
+        file: tasks/services.yml

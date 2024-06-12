@@ -1,0 +1,13 @@
+- name: Make sure specified user is in the sudoers file with NOPASSWD
+  community.general.sudoers:
+    name: "{{ user }}_sudo_config"
+    user: "{{ user }}"
+    nopassword: true
+    commands: ALL
+    state: present
+
+- name: Create gitconfig file for user
+  ansible.builtin.template:
+    src: ../files/gitconfig.j2
+    dest: "/home/{{user}}/.gitconfig"
+    mode: u=rw,g=r,o=r
