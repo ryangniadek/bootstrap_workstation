@@ -10,3 +10,8 @@ if ! [[ "$EDITOR" =~ "/usr/bin/vi" ]]; then
     EDITOR=/usr/bin/vi
 fi
 export EDITOR
+
+if ! [[ "$PS1" =~ "\u@local:\w\\$ " ]]; then
+    PS1="\u@local:\w\\$ "
+fi
+export PS1

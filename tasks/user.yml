@@ -15,3 +15,6 @@
     - gitconfig
     - bash_profile
     - bashrc
+
+- name: Source the bash profile
+  ansible.builtin.shell: ". /home/{{ user }}/.bash_profile"
