@@ -1,0 +1,28 @@
+---
+- name: Install fedora-workstation-repositories # noqa: package-latest
+  ansible.builtin.dnf:
+    name: fedora-workstation-repositories
+    state: latest
+
+- name: Enable repo
+  community.general.dnf_config_manager:
+    name: "{{ repo['name'] }}"
+    state: enabled
+  when: repo['baseurl'] is not defined
+
+- name: If baseurl is defined, assert gpgkey is defined
+  ansible.builtin.assert:
+    that:
+      - repo['gpgkey'] is defined
+      - repo['description'] is defined
+    fail_msg: "description and gpgkey are required when baseurl is defined"
+  when: repo['baseurl'] is defined
+
+- name: Add and enable repo
+  ansible.builtin.yum_repository:
+    name: "{{ repo['name'] }}"
+    description: "{{ repo['description'] }}"
+    baseurl: "{{ repo['baseurl'] }}"
+    gpgcheck: true
+    gpgkey: "{{ repo['gpgkey'] }}"
+  when: repo['baseurl'] is defined

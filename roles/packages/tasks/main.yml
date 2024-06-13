@@ -1,0 +1,40 @@
+---
+- name: Enable repos as needed
+  ansible.builtin.include_tasks:
+    file: enable_repos.yml
+  when: packages_enable_repos | length > 0
+  loop: "{{ packages_enable_repos }}"
+  loop_control:
+    loop_var: repo
+
+- name: Install system packages # noqa: package-latest
+  ansible.builtin.dnf:
+    name:
+      - "{{ package }}"
+    state: latest
+  loop: "{{ packages_dnf }}"
+  loop_control:
+    loop_var: package
+
+- name: Install pip packages # noqa: package-latest
+  ansible.builtin.pip:
+    name:
+      - "{{ package }}"
+    state: latest
+  loop: "{{ packages_pip }}"
+  loop_control:
+    loop_var: package
+
+- name: Add flathub remote
+  community.general.flatpak_remote:
+    name: flathub
+    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+
+- name: Install flatpak packages from flathub
+  community.general.flatpak:
+    name:
+      - "{{ package }}"
+    state: latest
+  loop: "{{ packages_flatpak }}"
+  loop_control:
+    loop_var: package

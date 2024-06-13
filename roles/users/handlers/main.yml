@@ -1,0 +1,5 @@
+---
+- name: Source the bash profile
+  ansible.builtin.command: ". /home/{{ user['username'] }}/.bash_profile"
+  changed_when: true
+  listen: source_bash_profile

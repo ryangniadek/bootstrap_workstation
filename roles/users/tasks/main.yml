@@ -1,0 +1,7 @@
+---
+- name: Include tasks for each user
+  ansible.builtin.include_tasks:
+    file: user.yml
+  loop: "{{ users_info }}"
+  loop_control:
+    loop_var: user

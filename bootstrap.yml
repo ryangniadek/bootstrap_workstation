@@ -3,20 +3,52 @@
   become: true
   hosts: localhost
 
+  # roles:
+  #   - users
+  #   - packages
+  #   - services
+
   tasks:
-
-    - name: Include user management
-      ansible.builtin.include_tasks:
-        file: tasks/user.yml
+    - name: Include role to manage users
+      ansible.builtin.include_role:
+        name: users
       vars:
-        user: rgniadek
-        user_name: Ryan Gniadek
-        user_email: rpg@redhat.com
+        users_info:
+          - username: rgniadek
+            name: Ryan Gniadek
+            email: ryan@gniadek.net
 
-    - name: Include package management tasks
-      ansible.builtin.include_tasks:
-        file: tasks/packages.yml
+    - name: Include role to manage packages
+      ansible.builtin.include_role:
+        name: packages
+      vars:
+        packages_enable_repos:
+          - name: google-chrome
+          - name: vscode
+            description: Visual Studio Code
+            baseurl: 'https://packages.microsoft.com/yumrepos/vscode'
+            gpgkey: 'https://packages.microsoft.com/keys/microsoft.asc'
+        packages_dnf:
+          - google-chrome-stable
+          - vim
+          - git
+          - ansible-core
+          - podman
+          - code
+          - python3-pip
+          - cockpit
+          - youtube-dl
+          - vlc
+        packages_pip:
+          - ansible-dev-tools
+        packages_flatpak:
+          - io.podman_desktop.PodmanDesktop
+          - com.slack.Slack
+          - com.spotify.Client
 
-    - name: Include systemd service tasks
-      ansible.builtin.include_tasks:
-        file: tasks/services.yml
+    - name: Include role to manage systemd services
+      ansible.builtin.include_role:
+        name: services
+      vars:
+        services_enabled_started:
+          - cockpit

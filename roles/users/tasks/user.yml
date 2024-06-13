@@ -1,0 +1,29 @@
+---
+- name: Make sure specified user is in the sudoers file with NOPASSWD
+  community.general.sudoers:
+    name: "{{ user['username'] }}_sudo_config"
+    user: "{{ user['username'] }}"
+    nopassword: true
+    commands: ALL
+    state: present
+
+- name: Create bash config files for user
+  ansible.builtin.template:
+    src: "../files/{{ file }}.j2"
+    dest: "/home/{{ user['username'] }}/.{{ file }}"
+    mode: u=rw,g=r,o=
+  loop:
+    - bash_profile
+    - bashrc
+  loop_control:
+    loop_var: file
+  notify: source_bash_profile
+
+- name: Create git config file for user
+  ansible.builtin.template:
+    src: "../files/gitconfig.j2"
+    dest: "/home/{{ user['username'] }}/.gitconfig"
+    mode: u=rw,g=r,o=r
+
+- name: Flush handlers before moving on to next user
+  ansible.builtin.meta: flush_handlers

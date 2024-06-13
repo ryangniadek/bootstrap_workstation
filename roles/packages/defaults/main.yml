@@ -1,0 +1,5 @@
+---
+packages_enable_repos: []
+packages_dnf: []
+packages_pip: []
+packages_flatpak: []
